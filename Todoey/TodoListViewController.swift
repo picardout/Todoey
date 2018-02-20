@@ -10,7 +10,7 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
-    let itemArray = ["Find Mike", "Buy Eggs", "Destroy Monster"]
+    var itemArray = ["Find Mike", "Buy Eggs", "Destroy Monster"]
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -30,7 +30,7 @@ class TodoListViewController: UITableViewController {
         return itemArray.count
     }
 
-    //MARK - tableview delegate methods:
+    //MARK: - tableview delegate methods:
     @objc func tableViewTapped() {
         var indexPath = tableView.indexPathsForSelectedRows![0] as IndexPath
         let iRow = indexPath.row
@@ -45,8 +45,24 @@ class TodoListViewController: UITableViewController {
         }
         //remove the sect (grey colour)
         tableView.deselectRow(at: indexPath, animated: true)
-//        let iRow = indexPath.row
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+    }
+    
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: "Provide a new Item", message: "", preferredStyle: .alert)
+        //method-level variable used to extract info from the closure
+        var theTextField = UITextField();
+        let action = UIAlertAction(title: "New Item", style: .default) { (action) in
+            print ("Success")
+            //adjust the array of items:
+            self.itemArray.append(theTextField.text!)
+            self.tableView.reloadData()
+        }
+        alert.addAction(action)
+        alert.addTextField { (textField) in
+            textField.placeholder = "Create new item"
+            theTextField = textField
+        }
+        present(alert, animated: true, completion: nil)
         
     }
 }
