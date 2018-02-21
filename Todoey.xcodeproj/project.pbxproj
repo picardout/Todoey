@@ -58,8 +58,8 @@
 			children = (
 				88D93C60203B64F5001701B9 /* Info.plist */,
 				88D93C69203CE995001701B9 /* Controller */,
-				88D93C6A203CE9A2001701B9 /* Views */,
 				88D93C66203CE895001701B9 /* Data Model */,
+				88D93C6A203CE9A2001701B9 /* Views */,
 				88D93C54203B64F5001701B9 /* AppDelegate.swift */,
 				88D93C6B203CE9F0001701B9 /* Support Files */,
 			);
