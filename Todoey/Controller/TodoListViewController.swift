@@ -7,19 +7,21 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
 
    // var defaults = UserDefaults.standard
 
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("items.plist")
+    let cntxt = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     var itemArray : [Item] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        loadItems()
+        //print (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        loadDataItems()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -54,14 +56,14 @@ class TodoListViewController: UITableViewController {
         var theTextField = UITextField();
         let action = UIAlertAction(title: "New Item", style: .default) { (action) in
             //adjust the array of items:
-            let newItem = Item()
+            let newItem = Item(context: self.cntxt)
             newItem.title = theTextField.text!
+            newItem.done = false
 
             self.itemArray.append( newItem )
             
             self.saveDataItems()
-            //save to UserDefaults:
- //           self.defaults.set(self.itemArray, forKey: "dictItems2")
+
         }
         alert.addAction(action)
         alert.addTextField { (textField) in
@@ -73,28 +75,22 @@ class TodoListViewController: UITableViewController {
     }
     
     func saveDataItems() {
-        //encode the array:
-        let encoder = PropertyListEncoder()
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try cntxt.save()
         } catch {
-            print("Error encoding:  + \(error)")
+            print("Error saving context:  + \(error)")
         }
         tableView.reloadData()
     }
-    
-    func loadItems() {
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            do {
-                itemArray = try decoder.decode([Item].self, from: data)
-            } catch {
-                print("Error encoding:  + \(error)")
-            }
+
+    func loadDataItems() {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+            itemArray = try cntxt.fetch(request)
+        } catch {
+            print("Error fetching context:  + \(error)")
         }
     }
-    
 }
 
 
